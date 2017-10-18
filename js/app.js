@@ -20,6 +20,9 @@ var Location = function(loc) {
     this.visible = ko.observable(true);
 };
 
+// Map markers
+var markers = [];
+
 // Render map
 var initMap = function () {
     var self = this;
@@ -29,9 +32,6 @@ var initMap = function () {
         zoom: 16
     });
 
-    // Map markers
-    var markers = [];
-    
     for (var i = 0; i < locations.length; i++) {
         var title = locations[i].name;
         var position = locations[i].location;
@@ -107,8 +107,13 @@ var ViewModel = function() {
             // Checks if filter value matches with location name
             if(ele.name().toLowerCase().indexOf(filter) >= 0) {
                 ele.visible(true);
+                // Check existence of marker and set it's visibility
+                if (markers[i])
+                    markers[i].setVisible(true);
             } else {
                 ele.visible(false);
+                if (markers[i])
+                    markers[i].setVisible(false);
             }
         }
     });
