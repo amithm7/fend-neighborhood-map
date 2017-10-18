@@ -38,26 +38,53 @@ var initMap = function () {
     for (var i = 0; i < locations.length; i++) {
         var title = locations[i].name;
         var position = locations[i].location;
-        
+
         var marker = new google.maps.Marker({
             map: map,
             title: title,
             position: position,
             animation: google.maps.Animation.DROP
         });
+
+        // FOURSQUARE API
+        var fsUrl = "https://api.foursquare.com/v2/venues/search";
+        fsUrl += '?' + $.param({
+            query: marker.title,
+            near: "Koramangala",
+            v: "20161016",
+            client_id: "YMKN5DFXHGGJGKIH53RT554F2LDQC4FS2T5IBJSI5D5BQDLV",
+            client_secret: "YDPKCF2OUNH03IAUIUELEWOHAFPJ4O2IZGEKWCY4ZTBTMZPX",
+        });
         
+        $.getJSON(fsUrl, (function(marker){
+            // Using concept of closures to pass current marker
+            return function (result) {
+                var venue = result.response.venues[0];
+                var info = (venue.categories[0].name ? "<div> <b> Category: </b> " + venue.categories[0].name:"") + "</div>" +
+                    (venue.contact.formattedPhone ? "<div> <b> Contact: </b> " + venue.contact.formattedPhone : "") + "</div>" +
+                    (venue.location.formattedAddress ? "<div> <b> Address: </b> " + venue.location.formattedAddress : "") + "</div>" +
+                    (venue.url ? "<div> <b> Website: </b> " + venue.url : "") + "</div>";
+
+                marker.info = info;
+            };
+        })(marker)).fail((function(marker) {
+            return function () {
+                marker.info = "<div> Failed to retrieve more info from Foursquare </div>";
+            };
+        })(marker));
+
         markers.push(marker);
         
         marker.addListener('click', function() {
             toggleBounce(this);
             populateInfoWindow(this, infoWindow);
             self.curMarker = this;
-        });    
+        });
     }
 
     // Currently clicked on marker, default as first one.
     this.curMarker = markers[0];
-
+    
     // From maps JS API documentation
     function toggleBounce(marker) {
         // Clear animation from previous marker
@@ -74,7 +101,7 @@ var initMap = function () {
         // Check to make sure the infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
             infowindow.marker = marker;
-            infowindow.setContent('<div>' + marker.title + '</div>');
+            infowindow.setContent('<div><b>' + marker.title + '</b></div>' + marker.info);
             infowindow.open(map, marker);
             // Make sure the marker property is cleared if the infowindow is closed and stop animation.
             infowindow.addListener('closeclick', function () {
@@ -93,7 +120,7 @@ var mapError = function() {
 // ViewModel
 var ViewModel = function() {
     self = this;
-    
+
     this.locations = ko.observableArray();
 
     locations.forEach(function(ele, i) {
