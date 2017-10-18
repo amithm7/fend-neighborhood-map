@@ -6,6 +6,15 @@ body {
     padding: 0;
 }
 
+.btn {
+    min-width: 48px;
+    min-height: 48px;
+    font-size:1.5em;
+    cursor:pointer;
+    background: inherit;
+    border: inherit;
+}
+
 .sidebar {
     width: 0px;
     float: left;
@@ -27,6 +36,6 @@ ul li {
 }
 
 #map {
-    height: 100%;
+    height: calc(100% - 48px);
     transition: margin-left .5s;
 }
