@@ -14,10 +14,11 @@ var locations = [
 ];
 
 // Locations constructor
-var Location = function(loc) {
+var Location = function(loc, i) {
     this.name = ko.observable(loc.name);
     this.location = ko.observable(loc.location);
     this.visible = ko.observable(true);
+    this.id = i;
 };
 
 // Map markers
@@ -31,6 +32,8 @@ var initMap = function () {
         center: { lat: 12.936257, lng: 77.616959 },
         zoom: 16
     });
+
+    var infoWindow = new google.maps.InfoWindow();
 
     for (var i = 0; i < locations.length; i++) {
         var title = locations[i].name;
@@ -47,6 +50,7 @@ var initMap = function () {
         
         marker.addListener('click', function() {
             toggleBounce(this);
+            populateInfoWindow(this, infoWindow);
             self.curMarker = this;
         });    
     }
@@ -65,6 +69,20 @@ var initMap = function () {
             marker.setAnimation(google.maps.Animation.BOUNCE);
         }
     }
+
+    function populateInfoWindow(marker, infowindow) {
+        // Check to make sure the infowindow is not already opened on this marker.
+        if (infowindow.marker != marker) {
+            infowindow.marker = marker;
+            infowindow.setContent('<div>' + marker.title + '</div>');
+            infowindow.open(map, marker);
+            // Make sure the marker property is cleared if the infowindow is closed and stop animation.
+            infowindow.addListener('closeclick', function () {
+                infowindow.marker = null;
+                marker.setAnimation(null);
+            });
+        }
+    }
 };
 
 // Map loading error
@@ -78,8 +96,8 @@ var ViewModel = function() {
     
     this.locations = ko.observableArray();
 
-    locations.forEach(function(ele) {
-        self.locations.push(new Location(ele));
+    locations.forEach(function(ele, i) {
+        self.locations.push(new Location(ele, i));
     });
 
     this.toggleNav = function() {
@@ -117,6 +135,12 @@ var ViewModel = function() {
             }
         }
     });
+
+    // Triggers a google map event when click on list item (Refered `this` here)
+    // https://developers.google.com/maps/documentation/javascript/reference#event
+    this.selectMarker = function() {
+        google.maps.event.trigger(markers[this.id], 'click');
+    };
 };
 
 ko.applyBindings(new ViewModel());

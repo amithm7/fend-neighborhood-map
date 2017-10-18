@@ -19,7 +19,7 @@
                 <input placeholder="Search" data-bind="textInput: filterLocations">
             </div>
             <ul class="list" data-bind="foreach: locations">
-                <li data-bind="text: name, visible: visible"></li>
+                <li data-bind="text: name, visible: visible, click: $parent.selectMarker"></li>
             </ul>
         </div>
         <div id="map"></div>
