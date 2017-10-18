@@ -34,6 +34,7 @@ var initMap = function () {
     });
 
     var infoWindow = new google.maps.InfoWindow();
+    var bounds = new google.maps.LatLngBounds();
 
     for (var i = 0; i < locations.length; i++) {
         var title = locations[i].name;
@@ -80,7 +81,9 @@ var initMap = function () {
             populateInfoWindow(this, infoWindow);
             self.curMarker = this;
         });
+        bounds.extend(markers[i].position);
     }
+    map.fitBounds(bounds, 70);
 
     // Currently clicked on marker, default as first one.
     this.curMarker = markers[0];
