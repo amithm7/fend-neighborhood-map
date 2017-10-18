@@ -15,6 +15,11 @@ body {
     border: inherit;
 }
 
+.closebtn {
+    margin-left: 220px;
+    font-size: 2em;
+}
+
 .sidebar {
     width: 0px;
     float: left;
