@@ -6,6 +6,27 @@ body {
     padding: 0;
 }
 
+.sidebar {
+    width: 0px;
+    float: left;
+    position: absolute;
+    overflow: hidden;
+}
+
+.search {
+    padding: 10px;
+}
+
+ul {
+    padding: 0;
+}
+
+ul li {
+    list-style-type: none;
+    padding: 5px 10px;
+}
+
 #map {
     height: 100%;
+    transition: margin-left .5s;
 }
