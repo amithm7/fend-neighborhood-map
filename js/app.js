@@ -93,6 +93,25 @@ var ViewModel = function() {
             map.style.marginLeft = "250px";
         }
     };
+
+    // Filter search input
+    this.filterLocations = ko.observable('');
+
+    // Search function automatically called as it is computed based on an observable 'filterLocations'
+    this.search = ko.computed(function() {
+        var filter = self.filterLocations().toLowerCase();
+
+        for(var i = 0; i < self.locations().length; i++) {
+            var ele = self.locations()[i];
+
+            // Checks if filter value matches with location name
+            if(ele.name().toLowerCase().indexOf(filter) >= 0) {
+                ele.visible(true);
+            } else {
+                ele.visible(false);
+            }
+        }
+    });
 };
 
 ko.applyBindings(new ViewModel());

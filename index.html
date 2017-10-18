@@ -16,10 +16,10 @@
         <div class="sidebar">
             <div class="btn closebtn" data-bind="click: toggleNav">&times;</div>
             <div class="search">
-                <input placeholder="Search">
+                <input placeholder="Search" data-bind="textInput: filterLocations">
             </div>
             <ul class="list" data-bind="foreach: locations">
-                <li data-bind="text: name"></li>
+                <li data-bind="text: name, visible: visible"></li>
             </ul>
         </div>
         <div id="map"></div>
