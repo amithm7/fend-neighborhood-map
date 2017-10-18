@@ -24,6 +24,11 @@ body {
 
 .search {
     padding: 10px;
+    display: flex;
+}
+
+.search input {
+    width: 100%;
 }
 
 ul {
