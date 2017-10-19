@@ -37,7 +37,7 @@ var initMap = function () {
     var bounds = new google.maps.LatLngBounds();
 
     // Loops through locations
-    for (var i = 0; i < locations.length; i++) {
+    locations.forEach(function (ele, i) {
         var title = locations[i].name;
         var position = locations[i].location;
 
@@ -88,7 +88,7 @@ var initMap = function () {
         });
         // Extend bounds of the map for each marker
         bounds.extend(markers[i].position);
-    }
+    });
     map.fitBounds(bounds, 70);
 
     // Currently selected marker, default as first one for toggling animation.
