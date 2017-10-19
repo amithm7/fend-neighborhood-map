@@ -36,10 +36,12 @@ var initMap = function () {
     var infoWindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
 
+    // Loops through locations
     for (var i = 0; i < locations.length; i++) {
         var title = locations[i].name;
         var position = locations[i].location;
 
+        // Create markers
         var marker = new google.maps.Marker({
             map: map,
             title: title,
@@ -56,7 +58,8 @@ var initMap = function () {
             client_id: "YMKN5DFXHGGJGKIH53RT554F2LDQC4FS2T5IBJSI5D5BQDLV",
             client_secret: "YDPKCF2OUNH03IAUIUELEWOHAFPJ4O2IZGEKWCY4ZTBTMZPX",
         });
-        
+
+        // API call to fetch details of the location
         $.getJSON(fsUrl, (function(marker){
             // Using concept of closures to pass current marker
             return function (result) {
@@ -74,20 +77,23 @@ var initMap = function () {
             };
         })(marker));
 
+        // Push marker to array to access outside this scope
         markers.push(marker);
-        
+
+        // Do bounce animation and open infoWindow when clicking on the marker
         marker.addListener('click', function() {
             toggleBounce(this);
             populateInfoWindow(this, infoWindow);
             self.curMarker = this;
         });
+        // Extend bounds of the map for each marker
         bounds.extend(markers[i].position);
     }
     map.fitBounds(bounds, 70);
 
-    // Currently clicked on marker, default as first one.
+    // Currently selected marker, default as first one for toggling animation.
     this.curMarker = markers[0];
-    
+
     // From maps JS API documentation
     function toggleBounce(marker) {
         // Clear animation from previous marker
@@ -100,6 +106,7 @@ var initMap = function () {
         }
     }
 
+    // Show infoWindow on marker
     function populateInfoWindow(marker, infowindow) {
         // Check to make sure the infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
@@ -130,6 +137,7 @@ var ViewModel = function() {
         self.locations.push(new Location(ele, i));
     });
 
+    // To toggle display of navigation sidebar
     this.toggleNav = function() {
         var sidebar = document.getElementsByClassName("sidebar")[0];
         var map = document.getElementById("map");
@@ -154,6 +162,7 @@ var ViewModel = function() {
 
             // Checks if filter value matches with location name
             if(ele.name().toLowerCase().indexOf(filter) >= 0) {
+                // Display list item
                 ele.visible(true);
                 // Check existence of marker and set it's visibility
                 if (markers[i])
